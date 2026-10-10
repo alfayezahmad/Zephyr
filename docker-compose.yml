@@ -1,0 +1,64 @@
+services:
+  # LocalStack: Official AWS Open Source Local Cloud Emulator
+  localstack:
+    image: localstack/localstack:3.8
+    container_name: zephyr-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb,sns
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - ./localstack_init:/etc/localstack/init/ready.d
+      - localstack-data:/var/lib/localstack
+    restart: unless-stopped
+
+
+  # MQTT Broker for Edge Actuation and AWS IoT Bridge
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: zephyr-mosquitto
+    ports:
+      - "1883:1883"
+    command: mosquitto -c /mosquitto-no-auth.conf
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    container_name: zephyr-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - LOCALSTACK_ENDPOINT_URL=http://localstack:4566
+      - USE_LOCALSTACK=true
+      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_PORT=1883
+      - AWS_REGION=us-east-1
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+    depends_on:
+      - localstack
+      - mosquitto
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: zephyr-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+
+volumes:
+  localstack-data:
