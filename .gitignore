@@ -30,3 +30,6 @@ pip-delete-this-directory.txt
 .vscode/
 .idea/
 *.swp
+
+# Internal Submission Docs & Drafts
+docs/

@@ -194,14 +194,6 @@ Zephyr includes deployment manifests for:
 
 ---
 
-## Hackathon Submission Assets
-
-- 🎬 **Demo Video Script (3 Minutes)**: [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md)
-- 📝 **AWS Builder Center Blog Post**: [docs/AWS_BUILDER_CENTER_BLOG.md](docs/AWS_BUILDER_CENTER_BLOG.md) *(Eligible for the AirPods 5 prize)*
-- 🏗️ **AWS Infrastructure Templates**: [infra/template.yaml](infra/template.yaml) & [infra/apprunner.yaml](infra/apprunner.yaml)
-
----
-
 ## Author & Academic Attribution
 
 **Alfayez Ahmad**  
