@@ -54,13 +54,20 @@ Zephyr unifies deep learning, operations research, cloud infrastructure, and emb
 
 ## 3. The Core Machine Learning: Wind-Modulated Graph Neural Networks
 
-Particulate pollution does not disperse uniformly; it advects along atmospheric wind corridors. We modeled the urban sensor topology of Lucknow (5 monitoring nodes: Talkatora, Lalbagh, Gomti Nagar, Alambagh, and Kalyanpur) as a directed graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$.
+Particulate pollution does not disperse uniformly; it advects along atmospheric wind corridors. We modeled the urban sensor topology of Lucknow (5 monitoring nodes: Talkatora, Lalbagh, Gomti Nagar, Alambagh, and Kalyanpur) as a directed graph **G = (V, E)**, where nodes **V** represent municipal monitoring stations and edges **E** represent atmospheric transport corridors.
 
-Using **PyTorch Geometric**, we designed a custom `WindAdvectionGNN` where wind speed and direction act as dynamic edge attributes modulating message passing:
+Using **PyTorch Geometric**, we designed a custom `WindAdvectionGNN` where wind speed and direction act as dynamic edge attributes modulating message passing across nodes:
 
-$$
-h_i^{(l+1)} = \text{ReLU} \left( W_{\text{update}} \cdot \left[ h_i^{(l)} \parallel \sum_{j \in \mathcal{N}(i)} \text{ReLU}\left( W_{\text{msg}} \cdot [h_j^{(l)} \parallel W_{\text{edge}} e_{j,i}] \right) \right] \right)
-$$
+```text
+h_i^(l+1) = ReLU( W_update · [ h_i^(l) || ∑_{j ∈ N(i)} ReLU( W_msg · [h_j^(l) || W_edge · e_{j,i}] ) ] )
+```
+
+*In PyTorch Geometric message-passing terms:*
+```python
+# Node i aggregates messages from upwind neighbors j, scaled by dynamic wind vector e_ji:
+message_ji = F.relu(linear_msg(torch.cat([h_j, linear_edge(e_ji)], dim=-1)))
+h_i_next = F.relu(linear_update(torch.cat([h_i, torch.sum(message_ji, dim=0)], dim=-1)))
+```
 
 ### Explainable AI (XAI) with PyTorch Captum
 Municipal orders that enforce vehicle bans or reroute public assets must be legally defensible. To eliminate the "black-box" dilemma, we integrated **PyTorch Captum** using `IntegratedGradients`. For every spike forecast, the system computes the exact percentage contribution of each feature (e.g., PM2.5 Lag, Temperature Inversion, Carbon Monoxide, Wind Shear).
