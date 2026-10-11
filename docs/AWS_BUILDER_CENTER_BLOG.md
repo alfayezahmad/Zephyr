@@ -56,16 +56,13 @@ Zephyr unifies deep learning, operations research, cloud infrastructure, and emb
 
 Particulate pollution does not disperse uniformly; it advects along atmospheric wind corridors. We modeled the urban sensor topology of Lucknow (5 monitoring nodes: Talkatora, Lalbagh, Gomti Nagar, Alambagh, and Kalyanpur) as a directed graph **G = (V, E)**, where nodes **V** represent municipal monitoring stations and edges **E** represent atmospheric transport corridors.
 
-Using **PyTorch Geometric**, we designed a custom `WindAdvectionGNN` where wind speed and direction act as dynamic edge attributes modulating message passing across nodes:
+Using **PyTorch Geometric**, we designed a custom `WindAdvectionGNN` where wind velocity vectors (speed and direction) dynamically modulate spatial message passing between monitoring nodes:
 
-```text
-h_i^(l+1) = ReLU( W_update · [ h_i^(l) || ∑_{j ∈ N(i)} ReLU( W_msg · [h_j^(l) || W_edge · e_{j,i}] ) ] )
-```
-
-*In PyTorch Geometric message-passing terms:*
 ```python
-# Node i aggregates messages from upwind neighbors j, scaled by dynamic wind vector e_ji:
+# 1. Message Step: Aggregate features from upwind neighbors j, modulated by wind vector e_ji
 message_ji = F.relu(linear_msg(torch.cat([h_j, linear_edge(e_ji)], dim=-1)))
+
+# 2. Update Step: Update station i state by combining local features with advected plume
 h_i_next = F.relu(linear_update(torch.cat([h_i, torch.sum(message_ji, dim=0)], dim=-1)))
 ```
 
