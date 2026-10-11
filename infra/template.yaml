@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Zephyr: AWS Serverless & Containerized Cyber-Physical Air Quality Digital Twin
+  Event 02: Bharat Builds Tour - Environmental Hacks (Track 01: Air)
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Environment:
+      Variables:
+        AWS_REGION: !Ref AWS::Region
+        DYNAMODB_TABLE_NAME: !Ref ZephyrAuditTable
+        S3_BUCKET_NAME: !Ref ZephyrTelemetryBucket
+        SNS_TOPIC_ARN: !Ref ZephyrAlertsTopic
+
+Resources:
+  # 1. DynamoDB Table for Statutory GRAP Auditing
+  ZephyrAuditTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Zephyr_AuditLogs
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: record_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: record_id
+          KeyType: HASH
+
+  # 2. S3 Data Lake Bucket for Spatio-Temporal Telemetry Snapshots
+  ZephyrTelemetryBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "zephyr-telemetry-lake-${AWS::AccountId}"
+      VersioningConfiguration:
+        Status: Enabled
+
+  # 3. Amazon SNS Topic for Emergency GRAP Alerts
+  ZephyrAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: Zephyr-GRAP-Alerts
+      DisplayName: "Zephyr Emergency Mitigation Broadcast"
+
+Outputs:
+  DynamoDBTable:
+    Description: "DynamoDB Statutory Audit Table"
+    Value: !Ref ZephyrAuditTable
+  S3Bucket:
+    Description: "S3 Telemetry Lake"
+    Value: !Ref ZephyrTelemetryBucket
+  SNSTopic:
+    Description: "SNS Alert Topic ARN"
+    Value: !Ref ZephyrAlertsTopic
+

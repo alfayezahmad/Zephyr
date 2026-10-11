@@ -1,0 +1,16 @@
+version: 1.0
+runtime: python310
+build:
+  commands:
+    build:
+      - pip install -r backend/requirements.txt
+run:
+  command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+  network:
+    port: 8000
+    env: APP_PORT
+  env:
+    - name: AWS_REGION
+      value: us-east-1
+    - name: AWS_BEDROCK_MODEL_ID
+      value: anthropic.claude-3-5-sonnet-20240620-v1:0
