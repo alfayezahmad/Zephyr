@@ -55,31 +55,36 @@ In rapidly developing urban centers like Delhi and Lucknow, extreme atmospheric 
 graph TD
     subgraph Data Ingestion Layer
         A[Open-Meteo REST API] -->|PM2.5, CO, Temp, Wind| B(FastAPI Backend)
-        B --> C{Data Normalization & Scaling}
+        B --> C{Spatial Graph Assembly}
     end
 
-    subgraph Deep Learning Inference Engine
-        C -->|Node Features & Edge Attributes| D[PyTorch Geometric ST-GNN]
-        D -->|Predicted PM2.5 Horizon| E[Captum XAI Engine]
+    subgraph Deep Learning Inference & Explainability
+        C -->|Node Features & Dynamic Wind Edges| D[PyTorch Geometric ST-GNN]
+        D -->|Feature Attributions| E[Captum XAI Engine]
+        D -->|24h Prediction Matrix| DISPATCH{Statutory GRAP Engine}
     end
     
-    subgraph Operations Research
-        E -->|Critical Nodes > 120 µg/m³| F[Google OR-Tools VRP Optimizer]
-        F -->|Optimal Dispatch Routes| G(Live Streamlit Dashboard)
+    subgraph Operations Research & Agentic Layer
+        DISPATCH -->|Critical Nodes > 60 µg/m³| F[Google OR-Tools VRP Optimizer]
+        DISPATCH -->|Spatial Matrix| K["Amazon Bedrock Agent<br/>Claude 3.5 Sonnet"]
     end
 
-    subgraph AWS Cloud & Agentic Layer
-        E -->|Forecast Matrix| K[Amazon Bedrock Agent<br/>Claude 3.5 Sonnet]
+    subgraph Command Center UI
+        E --> G(Streamlit 3D Command Center)
+        F -->|Optimal Dispatch Routes| G
         K -->|Executive Briefing| G
-        E -->|Statutory Audit Log| L[(Amazon DynamoDB)]
-        E -->|Telemetry Snapshot Lake| M[(Amazon S3 Bucket)]
-        E -->|Emergency Alert| N[Amazon SNS Broadcast]
+    end
+
+    subgraph AWS Cloud & LocalStack Persistence
+        DISPATCH -->|Statutory Audit Log| L[(Amazon DynamoDB)]
+        DISPATCH -->|Telemetry Snapshots| M[(Amazon S3 Data Lake)]
+        DISPATCH -->|Emergency Alerts| N[Amazon SNS Broadcast]
     end
 
     subgraph Cyber-Physical Edge Actuation
-        E -->|Statutory Threshold Trigger| H[AWS IoT Core / MQTT Broker]
-        H -->|Downlink JSON Payload| I[ESP32 Edge Gateway]
-        I -->|PWM / GPIO Signals| J[Relay Valves & Servo Mist Cannons]
+        DISPATCH -->|Encrypted Downlink| H["AWS IoT Core / MQTT Broker"]
+        H -->|Downlink JSON| I[ESP32 Edge Gateway]
+        I -->|Dual PWM Channels| J["Valves & Oscillating Mist Cannons"]
     end
 ```
 

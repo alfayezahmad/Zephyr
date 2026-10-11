@@ -23,24 +23,25 @@ We built **Zephyr** to solve this. Instead of being a passive dashboard, Zephyr 
 Zephyr unifies deep learning, operations research, cloud infrastructure, and embedded hardware into a resilient closed-loop system:
 
 ```
-[Open-Meteo REST APIs]
-        │ (PM2.5, Wind, Temp, CO)
-        ▼
-[PyTorch Geometric ST-GNN] ──> [Captum XAI Feature Attribution]
-        │
-        ├─────────────────────────────────────────────────┐
-        ▼                                                 ▼
+                        [Open-Meteo REST APIs]
+                                  │ (Live PM2.5, Wind, Temp, CO)
+                                  ▼
+[Captum XAI Engine] <── [PyTorch Geometric ST-GNN]
+(Integrated Gradients)            │ (24h Spatial Prediction Matrix)
+        ┌─────────────────────────┴────────────────────────┐
+        ▼                                                  ▼
 [Amazon Bedrock Agent]                           [Google OR-Tools VRP]
-(Claude 3.5 Sonnet Diagnostics)                 (Optimal Mist Cannon Fleet Routes)
-        │                                                 │
-        ├─────────────────────────────────────────────────┘
-        ▼
-[Statutory Dispatch Engine]
-        │
-        ├──> [Amazon DynamoDB] (Immutable GRAP Audit Trail)
-        ├──> [Amazon S3] (Telemetry Snapshots Lake)
-        ├──> [Amazon SNS] (Municipal Emergency Alerts)
-        └──> [AWS IoT Core / MQTT] ──> [ESP32 Edge Actuator & Mist Cannon Servos]
+(Claude 3.5 Sonnet Diagnostics)                 (Constrained Fleet Routing)
+        │                                                  │
+        ├─────────────────────────┬────────────────────────┘
+        ▼                         ▼
+[Streamlit 3D Command Center]  [Statutory Dispatch Engine]
+(PyDeck Digital Twin / SCADA)     │
+                                  ├──> [Amazon DynamoDB] (Immutable GRAP Audit Trail)
+                                  ├──> [Amazon S3] (Telemetry Snapshots Lake)
+                                  ├──> [Amazon SNS] (Municipal Emergency Broadcasts)
+                                  └──> [AWS IoT Core / MQTT] ──> [ESP32 Edge Actuators]
+                                                                 (Relays & Mist Cannons)
 ```
 
 ### AWS Stack Overview

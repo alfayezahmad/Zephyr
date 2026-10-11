@@ -65,8 +65,8 @@ Zephyr operates as an autonomous closed loop:
 ### AWS Cloud & Open Source Integration:
 * **Amazon Bedrock (Claude 3.5 Sonnet)**: Synthesizes ST-GNN prediction tensors into actionable executive briefings with a zero-crash autonomous fallback engine.
 * **LocalStack (AWS Open Source)**: Emulates Amazon S3, DynamoDB, and SNS locally for zero-cloud-bill municipal prototyping.
-* **Amazon DynamoDB**: Immutably logs all statutory CAQM GRAP intervention orders in the audit ledger (`AeroTwin_AuditLogs`).
-* **Amazon S3**: Ingests continuous spatio-temporal telemetry snapshots into a data lake (`s3://aerotwin-telemetry-lake`).
+* **Amazon DynamoDB**: Immutably logs all statutory CAQM GRAP intervention orders in the audit ledger (`Zephyr_AuditLogs`).
+* **Amazon S3**: Ingests continuous spatio-temporal telemetry snapshots into a data lake (`s3://zephyr-telemetry-lake`).
 * **Amazon SNS & AWS IoT Core**: Sends emergency broadcast alerts and MQTT downlink payloads to edge actuators.
 * **AWS App Runner & AWS SAM**: Configured for 1-click cloud container deployment and serverless orchestration (`infra/apprunner.yaml`, `infra/template.yaml`).
 
